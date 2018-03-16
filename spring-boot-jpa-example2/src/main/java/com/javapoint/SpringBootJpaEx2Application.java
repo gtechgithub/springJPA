@@ -1,6 +1,7 @@
 package com.javapoint;
 
 import java.util.Iterator;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -16,16 +17,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @PropertySource("application.properties")
 //@ImportResource("applicationcontext.xml")
-public class SpringBootJpaEx1Application{
+public class SpringBootJpaEx2Application{
 
 	public static void main(String[] args) {
 		
-		SpringApplication.run(SpringBootJpaEx1Application.class, args);
+			SpringApplication.run(SpringBootJpaEx2Application.class, args);
 	}
 	
 	@Bean
@@ -41,8 +45,14 @@ public class SpringBootJpaEx1Application{
 			service.updateEmployee(2, 4000);
 			
 			//delete employee;
-			System.out.println("first name of employee3:" + service.findByFirstName("firstname3"));
-			service.deleteEmployee(3);
+			//System.out.println("first name of employee3:" + service.findByFirstName("firstname3"));
+			try {
+				service.deleteEmployee(3);
+					
+			}
+			catch(Exception e) {
+				System.out.println(e.getMessage());
+			}
 			
 			//get all employees;
 			for(Iterator<Employee> iter=service.listAllEmployees().iterator();iter.hasNext();) {
@@ -50,6 +60,23 @@ public class SpringBootJpaEx1Application{
 				System.out.println("Employees:" + ((Employee) iter.next()));
 				
 			}
+			
+			
+			//pageabe example
+			List<Employee>  empPage = service.listAllEmployees("lastname1", new PageRequest(0, 3));
+		    for (Employee emp: empPage) {
+		    	System.out.println("emp:" +emp);
+		    }
 		};
 	}
 }
+
+
+/**************output for pagenation 
+
+
+emp:id:1 firstname:firstname1 lastname:lastname1 salary:1000
+emp:id:6 firstname:firstname1 lastname:lastname1 salary:1000
+emp:id:9 firstname:firstname1 lastname:lastname1 salary:1000
+
+********************************************************/

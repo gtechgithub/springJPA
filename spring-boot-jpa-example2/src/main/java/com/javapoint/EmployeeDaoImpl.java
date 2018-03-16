@@ -4,11 +4,14 @@ import java.util.List;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 @Component
-@Transactional
+//@Transactional
+@Transactional(noRollbackFor = Exception.class)
 public class EmployeeDaoImpl implements EmployeeDao{
 
 		@Autowired
@@ -45,7 +48,16 @@ public class EmployeeDaoImpl implements EmployeeDao{
 		}
 		
 		public void deleteEmployee(int empId) {
-			empRepository.delete(empId);
+			
+			try {
+				empRepository.delete(empId);
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public Iterable<Employee> listAllEmployees(String lastName,Pageable pageable){
+			return empRepository.findByLastName(lastName,pageable);
 		}
 
 }
