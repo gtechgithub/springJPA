@@ -1,0 +1,62 @@
+4 options to generate Primary Keys
+JPA specification supports 4 strategies to generate primary key values by programmatically
+or use database features like auto incremeted colums or sequences.
+
+GenerationType.AUTO
+---------------------
+it is the default GenerationType and it will let persistence provider to choose
+the generation strategy.
+For most popular databases, it selects GenerationType.SEQUENCE
+
+@Id
+@GeneratedValue(strategy = GenerationType.AUTO)
+@Column(name = "id", updatable = false, nullable = false)
+private Long id;
+
+GenerationType.IDENTITY
+-------------------------
+It is the easiest to use and it relies on the auto incremented database column and let database
+to generate new value for each insert operation.
+but it is not the best one with respect to performance point of view.
+
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "id", updatable = false, nullable = false)
+private Long id;
+
+GenerationType.SEQUENCE
+-----------------------
+it is the preferred way to generate primary key values and it relies on database sequence 
+to generate unique values.
+it requires additional select statement to get the next value but this does has no 
+performance impact.
+
+if you dont provide sequence name then hibernate will request the next value from its default sequence.
+
+eg:
+
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE)
+@Column(name = "id", updatable = false, nullable = false)
+private Long id;
+
+
+
+@Id
+@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "book_generator")
+@SequenceGenerator(name="book_generator", sequenceName = "book_seq", allocationSize=50)
+@Column(name = "id", updatable = false, nullable = false)
+private Long id;
+
+GenerationType.TABLE
+---------------------
+it is very rarely used nowadays, since it requires to lock and generate values from table and then resume other database
+operation.
+
+This slows down your application, and you should, therefore, prefer the GenerationType.SEQUENCE
+
+@Id
+@GeneratedValue(strategy = GenerationType.TABLE)
+@Column(name = "id", updatable = false, nullable = false)
+private Long id;
+
